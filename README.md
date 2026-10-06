@@ -21,4 +21,7 @@ Frontend` : Contains all user interfaces (Parent, Admin, Child dashboards)
 2. Run the Backend API from Visual Studio.
 3. Open Frontend files using Live Server.
 
-Developed by Eman - 2026
+1- Go to Backend/ folder
+2- Rename appsettings.Example.json to appsettings.json
+3- Run the Backend APIOpen Frontend files using Live Server
+4-Developed by Eman - 2026
