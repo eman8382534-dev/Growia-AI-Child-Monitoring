@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Growia - New Hero</title>
+  <style>
+    :root {
+      --font-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --radius-md: 12px;
+      --radius-xl: 16px;
+      --radius-full: 9999px;
+      --shadow-lg: 0 25px 50px rgba(0,0,0,0.15);
+      --sky-light: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+      --teal: #0f9375;
+      --teal-light: #14b8a6;
+      --yellow: #ffd93d;
+      --yellow-dark: #f5c211;
+      --green-dark: #27ae60;
+      --coral: #ff6b6b;
+      --text-dark: #1e293b;
+      --text-light: #64748b;
+      --text-mid: #94a3b8;
+    }
+
+    * { box-sizing: border-box; }
+    body { 
+      margin: 0; 
+      font-family: var(--font-main); 
+      background: var(--sky-light);
+      overflow-x: hidden;
+    }
+
+    /* Animations */
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+
+    .page {
+      min-height: 100vh;
+      background: var(--sky-light);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    /* Decorative Background elements */
+    .cloud-s { position:absolute; background:white; border-radius:50px; opacity:0.85; }
+    .cs1 { width:90px; height:34px; top:70px; left:60px; }
+    .cs1::before { content:''; position:absolute; width:44px; height:44px; background:white; border-radius:50%; top:-16px; left:12px; }
+    .butterfly { position:absolute; font-size:22px; animation: float 4s ease-in-out infinite; }
+    .bt1 { top:200px; left:80px; }
+    .bt2 { top:280px; right:100px; animation-delay:-2s; }
+    .ladybug { position:absolute; font-size:18px; top:360px; left:50px; }
+
+    /* SUN Graphic */
+    .sun-wrap {
+      position: absolute;
+      top: 16px; right: 16px;
+      width: 110px; height: 110px;
+      background: radial-gradient(circle, #ffe066, #f5c842);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 52px;
+      box-shadow: 0 0 25px rgba(245,200,66,0.4);
+      animation: float 4s ease-in-out infinite;
+      z-index: 5;
+    }
+
+    /* PROGRESS DOTS */
+    .progress-dots {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+
+    .dot {
+      width: 36px; height: 12px;
+      border-radius: var(--radius-full);
+      background: rgba(255,255,255,0.5);
+      transition: all 0.3s;
+    }
+
+    .dot.active { background: var(--teal); width: 48px; }
+    .dot.done { background: #27ae60; }
+
+    /* CARD */
+    .signup-card {
+      background: rgba(255,255,255,0.92);
+      border-radius: var(--radius-xl);
+      padding: 40px;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: var(--shadow-lg);
+      text-align: center;
+      position: relative;
+      z-index: 10;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .step-icon { font-size: 48px; margin-bottom: 12px; }
+
+    .step-title {
+      font-family: var(--font-display);
+      font-size: 28px;
+      color: var(--teal);
+      margin-bottom: 6px;
+    }
+
+    .step-sub {
+      font-size: 16px;
+      color: var(--teal-light);
+      margin-bottom: 28px;
+      font-weight: 600;
+    }
+
+    .form-group { text-align: left; margin-bottom: 18px; }
+
+    /* Avatar grid */
+    .avatar-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .avatar-opt {
+      width: 70px; height: 70px;
+      border-radius: 50%;
+      background: #f0f7fa;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 30px;
+      cursor: pointer;
+      border: 3px solid transparent;
+      transition: all 0.2s;
+      margin: 0 auto;
+    }
+
+    .avatar-opt:hover { border-color: var(--teal-light); transform: scale(1.08); }
+    .avatar-opt.selected { border-color: var(--teal); background: #e0f0f8; box-shadow: 0 0 0 4px rgba(58,125,140,0.2); }
+
+    /* Traits */
+    .traits-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 24px;
+      text-align: left;
+    }
+
+    .trait-opt {
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      background: #f0f7fa;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.2s;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .trait-opt:hover { border-color: var(--teal-light); }
+    .trait-opt.selected { border-color: var(--teal); background: #e0f0f8; }
+    .trait-opt .trait-icon { font-size: 18px; margin-bottom: 4px; }
+
+    /* Password strength */
+    .pass-strength {
+      height: 4px;
+      border-radius: 2px;
+      margin-top: 6px;
+      transition: all 0.3s;
+    }
+
+    .pass-hint { font-size: 12px; color: var(--text-light); margin-top: 4px; }
+
+    /* Nav buttons */
+    .nav-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .btn-next {
+      flex: 1;
+      padding: 14px;
+      background: var(--yellow);
+      color: var(--text-dark);
+      border: none;
+      border-radius: var(--radius-full);
+      font-family: var(--font-main);
+      font-weight: 800;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-next:hover { background: var(--yellow-dark); transform: scale(1.02); }
+    .btn-next:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .btn-back-small {
+      padding: 14px 20px;
+      background: #f0f0f0;
+      border: none;
+      border-radius: var(--radius-full);
+      font-family: var(--font-main);
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-back-small:hover { background: #e0e0e0; }
+
+    /* Ground Graphic */
+    .ground-bottom {
+      position: absolute; bottom:0; left:0; right:0;
+    }
+
+    .fence-b {
+      height: 50px;
+      background: repeating-linear-gradient(90deg, white 0px, white 18px, transparent 18px, transparent 26px);
+      border-top: 6px solid white;
+      position: absolute; bottom: 36px; left:0; right:0;
+    }
+
+    .grass-b {
+      height: 40px;
+      background: linear-gradient(to bottom, #7ec850, #5ca830);
+      position: absolute; bottom:0; left:0; right:0;
+    }
+
+    .flowers-b { position:absolute; bottom:38px; left:0; right:0; }
+    .fl { position:absolute; font-size:26px; }
+
+    .back-heroes { display:block; text-align:center; margin-top:20px; font-size:14px; color:var(--teal); text-decoration:none; font-weight:600; position:relative; z-index:10; }
+    .back-heroes:hover { text-decoration:underline; }
+
+    /* Step display */
+    .step { display: none; }
+    .step.active { display: block; }
+
+    /* Success */
+    .success-anim { font-size: 64px; animation: bounce 1s ease infinite; margin-bottom: 16px; }
+
+    /* Form inputs */
+    .form-input {
+      width: 100%; padding: 14px 16px;
+      border: 2px solid #e2e8f0; border-radius: var(--radius-full);
+      font-family: var(--font-main); font-size: 16px;
+      transition: all 0.2s; background: white;
+    }
+    .form-input:focus {
+      outline: none; border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(15,147,117,0.1);
+    }
+    .form-label {
+      display: block; font-weight: 600; color: var(--text-dark);
+      margin-bottom: 6px; font-size: 14px;
+    }
+    .error-msg {
+        color: #ff4d4d;
+        font-size: 0.85rem;
+        display: block;
+        margin-top: 5px;
+        text-align: left;
+        font-weight: bold;
+    }
+    input.is-invalid {
+        border: 2px solid #ff4d4d !important;
+    }
+    /* Mobile */
+    @media (max-width: 480px) {
+      .signup-card { padding: 32px 24px; margin: 0 12px; }
+      .avatar-opt { width: 60px; height: 60px; font-size: 24px; }
+      .progress-dots { gap: 8px; margin-bottom: 16px; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <div class="cloud-s cs1"></div>
+  <div class="butterfly bt1">🦋</div>
+  <div class="butterfly bt2">🦋</div>
+  <div class="ladybug">🐞</div>
+  <div class="sun-wrap">☀️</div>
+
+  <div class="progress-dots" id="progressDots">
+    <div class="dot active" id="d0"></div>
+    <div class="dot" id="d1"></div>
+    <div class="dot" id="d2"></div>
+    <div class="dot" id="d3"></div>
+    <div class="dot" id="d4"></div>
+    <div class="dot" id="d5"></div>
+  </div>
+
+  <div class="signup-card">
+
+    <div class="step active" id="step-0">
+      <div class="step-icon">⭐</div>
+      <h2 class="step-title">Let's start your adventure.</h2>
+      <p class="step-sub">Enter your name and age</p>
+      
+      <div class="form-group">
+        <label class="form-label">Your awesome name</label>
+        <input type="text" class="form-input" id="childName" placeholder="What's your name?">
+        <span class="error-msg" id="error-FullName"></span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">How old are you?</label>
+        <input type="number" class="form-input" id="childAge" placeholder="Your age" min="4" max="17">
+        <span class="error-msg" id="error-Age"></span>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn-next" onclick="validateStep1()">Next →</button>
+      </div>
+    </div>
+
+    <div class="step" id="step-1">
+      <div class="step-icon">🎨</div>
+      <h2 class="step-title">Pick your avatar!</h2>
+      <p class="step-sub">Who do you want to be?</p>
+      <div class="avatar-grid">
+        <div class="avatar-opt" onclick="selectAvatar(this)">🦁</div>
+        <div class="avatar-opt" onclick="selectAvatar(this)">🦋</div>
+        <div class="avatar-opt" onclick="selectAvatar(this)">🌸</div>
+        <div class="avatar-opt" onclick="selectAvatar(this)">🐯</div>
+        <div class="avatar-opt" onclick="selectAvatar(this)">🦊</div>
+        <div class="avatar-opt" onclick="selectAvatar(this)">🐸</div>
+        <div class="avatar-opt" onclick="selectAvatar(this)">🦄</div>
+        <div class="avatar-opt" onclick="selectAvatar(this)">🐼</div>
+      </div>
+      <div class="nav-row">
+        <button class="btn-back-small" onclick="goStep(0)">← Back</button>
+        <button class="btn-next" onclick="goStep(2)" id="nextStep2" disabled>Next →</button>
+      </div>
+    </div>
+
+    <div class="step" id="step-2">
+      <div class="step-icon">💫</div>
+      <h2 class="step-title">What describes you?</h2>
+      <p class="step-sub" id="traitsCount">Pick your 3 strongest traits! (0/3)</p>
+      <div class="traits-grid">
+        <div class="trait-opt" onclick="selectTrait(this)"><div class="trait-icon"></div>Curiosity</div>
+        <div class="trait-opt" onclick="selectTrait(this)"><div class="trait-icon"></div>Persistence</div>
+        <div class="trait-opt" onclick="selectTrait(this)"><div class="trait-icon"></div>Kindness</div>
+        <div class="trait-opt" onclick="selectTrait(this)"><div class="trait-icon"></div>Spiritual</div>
+        <div class="trait-opt" onclick="selectTrait(this)"><div class="trait-icon"></div>Vitality</div>
+        <div class="trait-opt" onclick="selectTrait(this)"><div class="trait-icon"></div>Resilience</div>
+      </div>
+      <div class="nav-row">
+        <button class="btn-back-small" onclick="goStep(1)">← Back</button>
+        <button class="btn-next" onclick="goStep(3)" id="nextStep3" disabled>Next →</button>
+      </div>
+    </div>
+
+    <div class="step" id="step-3">
+      <div class="step-icon">🏷️</div>
+      <h2 class="step-title">Create your identity!</h2>
+      <p class="step-sub">How will you be known in Growia?</p>
+
+      <div class="form-group">
+        <label class="form-label">Choose a Hero Name (Username)</label>
+        <input type="text" class="form-input" id="childUsername" placeholder="e.g. SuperSami2026">
+        <span class="error-msg" id="error-Username"></span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Parent's Email (Recommended)</label>
+        <input type="email" class="form-input" id="parentEmailInput" placeholder="Enter your parent's email">
+        <span class="error-msg" id="error-ParentEmail"></span>
+        <small style="color: var(--text-light); font-size: 11px;">If you don't have it, just click Next!</small>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn-back-small" onclick="goStep(2)">← Back</button>
+        <button class="btn-next" onclick="handleEmailStep()">Next →</button>
+      </div>
+    </div>
+
+    <div class="step" id="step-3-5">
+      <div class="step-icon">📧</div>
+      <h2 class="step-title">One more thing!</h2>
+      <p class="step-sub">Since you didn't add a parent's email, we need yours!</p>
+
+      <div class="form-group">
+        <label class="form-label">Your Personal Email</label>
+        <input type="email" class="form-input" id="childPersonalEmail" placeholder="Enter your own email">
+        <span class="error-msg" id="error-ChildPersonalEmail"></span>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn-back-small" onclick="goStep(3)">← Back</button>
+        <button class="btn-next" onclick="validateChildEmail()">Next →</button>
+      </div>
+    </div>
+
+    <div class="step" id="step-4">
+      <div class="step-icon">🔐</div>
+      <h2 class="step-title">Create your secret password!</h2>
+      <p class="step-sub">Only you should know this</p>
+
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-input" id="childPass" placeholder="Create a password..." oninput="checkStrength()">
+        <div class="pass-strength" id="passStrength"></div>
+        <span class="error-msg" id="error-Password"></span>
+        <div class="pass-hint" id="passHint">Use at least 6 characters</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Confirm Password</label>
+        <input type="password" class="form-input" id="childPassConfirm" placeholder="Type it again...">
+        <span class="error-msg" id="error-ConfirmPassword"></span>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn-back-small" onclick="handleBackFromPassword()">← Back</button>
+        <button class="btn-next" onclick="createHero()" id="createBtn">Create Hero!</button>
+      </div>
+    </div>
+
+    <div class="step" id="step-5">
+      <div class="success-anim">🌱</div>
+      <h2 class="step-title" style="color:var(--green-dark);">Welcome to the Garden!</h2>
+      <p style="color:var(--text-mid); margin-bottom:24px; font-size:15px; line-height:1.6;">
+        Your hero account is ready! Time to start your adventure and grow your superpowers!
+      </p>
+      <a href="leafy.html" class="btn-next" style="display: flex; justify-content:center; align-items: center; width:100%; font-size:16px; text-decoration: none;">
+        Start My Journey
+      </a>
+    </div>
+
+  </div>
+  <a href="hero-hub.html" class="back-heroes">← Back to Heroes</a>
+
+  <div class="ground-bottom">
+    <div class="fence-b"></div>
+    <div class="grass-b"></div>
+    <div class="flowers-b">
+      <span class="fl" style="left:80px;">🌸</span>
+      <span class="fl" style="left:280px;">🌻</span>
+      <span class="fl" style="right:200px;">🌼</span>
+      <span class="fl" style="right:80px;">🌷</span>
+    </div>
+  </div>
+</div>
+<script src="script.js"></script>
+<script>
+const API_BASE = API_BASE_URL;
+let currentStep = 0;
+let selectedTraits = [];
+let selectedAvatar = '';
+
+// ================= 1. Navigation =================
+function goStep(n) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    
+    currentStep = n;
+    const targetStep = document.getElementById('step-' + n);
+    if (targetStep) {
+        targetStep.classList.add('active');
+    }
+    updateDots();
+}
+
+function showSpecificStep(stepId) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.getElementById(stepId).classList.add('active');
+    if(stepId === 'step-3-5') {
+        currentStep = 3; 
+        updateDots();
+    }
+}
+
+function updateDots() {
+    for (let i = 0; i < 6; i++) {
+        const dot = document.getElementById('d' + i);
+        if(dot) {
+            dot.classList.remove('active', 'done');
+            if (i < currentStep) dot.classList.add('done');
+            else if (i === currentStep) dot.classList.add('active');
+        }
+    }
+}
+
+function handleBackFromPassword() {
+    const parentEmail = document.getElementById('parentEmailInput').value.trim();
+    if (parentEmail === "") {
+        showSpecificStep('step-3-5');
+    } else {
+        goStep(4);
+    }
+}
+
+// ================= 2. Logic & Validation =================
+
+function validateStep1() {
+    const name = document.getElementById('childName').value.trim();
+    const ageInput = document.getElementById('childAge').value;
+    const age = parseInt(ageInput) || 0;
+    
+    document.getElementById('error-FullName').innerText = "";
+    document.getElementById('error-Age').innerText = "";
+
+    if (!name || name.length < 3 || name.length > 30) {
+        document.getElementById('error-FullName').innerText = "Name must be between 3-30 characters";
+        return;
+    }
+
+    if (!ageInput || age < 5 || age > 18) {
+        document.getElementById('error-Age').innerText = "Age must be between 5 and 18";
+        return;
+    }
+    
+    goStep(1);
+}
+
+function validateStepUsername() {
+    const username = document.getElementById('childUsername').value.trim();
+    const regex = /^[a-zA-Z0-9_]+$/;
+    document.getElementById('error-Username').innerText = "";
+
+    if (!username || !regex.test(username)) {
+        document.getElementById('error-Username').innerText = "Use letters, numbers, and underscores only";
+        return;
+    }
+    handleEmailStep();
+}
+
+function validateChildEmail() {
+    const childEmail = document.getElementById('childPersonalEmail').value.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    document.getElementById('error-ChildPersonalEmail').innerText = "";
+
+    if (!childEmail || !emailRegex.test(childEmail)) {
+        document.getElementById('error-ChildPersonalEmail').innerText = "Invalid email format";
+        return;
+    }
+    goStep(4);
+}
+
+function selectAvatar(el) {
+    document.querySelectorAll('.avatar-opt').forEach(a => a.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedAvatar = el.textContent.trim();
+    document.getElementById('nextStep2').disabled = false;
+}
+
+function selectTrait(el) {
+    const traitName = el.innerText.trim();
+    if (el.classList.contains('selected')) {
+        el.classList.remove('selected');
+        selectedTraits = selectedTraits.filter(t => t !== traitName);
+    } else if (selectedTraits.length < 3) {
+        el.classList.add('selected');
+        selectedTraits.push(traitName);
+    }
+    document.getElementById('traitsCount').textContent = `Pick your 3 strongest traits! (${selectedTraits.length}/3)`;
+    document.getElementById('nextStep3').disabled = selectedTraits.length < 3;
+}
+
+function handleEmailStep() {
+    const parentEmail = document.getElementById('parentEmailInput').value.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    document.getElementById('error-ParentEmail').innerText = "";
+
+    if (parentEmail === "") {
+        showSpecificStep('step-3-5');
+    } else if (!emailRegex.test(parentEmail)) {
+        document.getElementById('error-ParentEmail').innerText = "Parent email format is invalid";
+    } else {
+        goStep(4);
+    }
+}
+
+function checkStrength() {
+    const pass = document.getElementById('childPass').value;
+    const bar = document.getElementById('passStrength');
+    const hint = document.getElementById('passHint');
+    
+    if (pass.length === 0) {
+        bar.style.width = '0';
+        hint.innerText = "";
+    } else if (pass.length >= 6) {
+        bar.style.width = '100%';
+        bar.style.backgroundColor = '#27ae60';
+        hint.innerText = "Strong enough";
+    } else {
+        bar.style.width = (pass.length * 16.6) + '%';
+        bar.style.backgroundColor = '#f1c40f';
+        hint.innerText = "Too short (Min 6 chars)";
+    }
+}
+
+function validatePasswordStep() {
+    const pass = document.getElementById('childPass').value;
+    const confirmPass = document.getElementById('childPassConfirm').value;
+    const errorSpan = document.getElementById('error-Password');
+    
+    if (pass.length < 6) {
+        if(errorSpan) errorSpan.innerText = "Password must be at least 6 characters long";
+        return false;
+    }
+
+    if (pass !== confirmPass) {
+        if(errorSpan) errorSpan.innerText = "Passwords do not match";
+        return false;
+    }
+
+    if(errorSpan) errorSpan.innerText = "";
+    return true;
+}
+
+// ================= 3. API Call =================
+
+function getOrCreateDeviceId() {
+    let deviceId = localStorage.getItem('grawiaa_device_id');
+    if (!deviceId) {
+        deviceId = 'dev-' + Math.random().toString(36).substring(2, 15);
+        localStorage.setItem('grawiaa_device_id', deviceId);
+    }
+    return deviceId;
+}
+
+async function createHero() {
+    if (!validatePasswordStep()) return;
+
+    document.querySelectorAll('[id^="error-"]').forEach(el => el.innerText = "");
+
+    const btn = document.getElementById('createBtn');
+    const payload = {
+        FullName: document.getElementById('childName').value.trim(),
+        Age: parseInt(document.getElementById('childAge').value) || 0,
+        Username: document.getElementById('childUsername').value.trim(),
+        ChildPersonalEmail: document.getElementById('childPersonalEmail').value.trim() || null,
+        ParentEmail: document.getElementById('parentEmailInput').value.trim() || null,
+        Password: document.getElementById('childPass').value,
+        ConfirmPassword: document.getElementById('childPassConfirm').value,
+        CharacterType: selectedAvatar || "Warrior",
+        Traits: selectedTraits.length > 0 ? selectedTraits : ["Brave"]
+    };
+
+    try {
+        btn.disabled = true;
+        const response = await fetch(`${API_BASE}/Auth/signup-child`, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'X-Device-Fingerprint': getOrCreateDeviceId()
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('mode') === 'parent') {
+                window.location.href = 'parent-dashboard.html'; 
+            } else {
+               window.location.href = 'leafy.html';
+            }
+        } else {
+            if (Array.isArray(result)) {
+                result.forEach(err => {
+                    if (err.code && err.code.includes("Password")) {
+                        document.getElementById('error-Password').innerText = err.description;
+                    }
+                });
+            }
+
+            if (result.message) {
+                const userError = document.getElementById('error-Username');
+                if (userError) {
+                    userError.innerText = result.message;
+                    goStep(3);
+                }
+            }
+
+            if (result.errors) {
+                for (const key in result.errors) {
+                    const errorSpan = document.getElementById(`error-${key}`);
+                    if (errorSpan) {
+                        errorSpan.innerText = result.errors[key][0];
+                        if (key === 'Username') goStep(3);
+                        if (key === 'FullName' || key === 'Age') goStep(0);
+                    }
+                }
+            }
+        }
+    } catch (e) {
+        console.error("Fetch error:", e);
+    } finally {
+        btn.disabled = false;
+    }
+}
+</script>
+</body>
+</html>

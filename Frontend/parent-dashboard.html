@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Growia - Parent Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body { background: var(--peach); }
+
+    /* Top bar */
+    .top-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 32px; background: var(--peach);
+    }
+    .parent-greeting { display: flex; align-items: center; gap: 16px; }
+    .parent-avatar {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: linear-gradient(135deg, #f5a0a0, #e07070);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; box-shadow: var(--shadow-sm);
+    }
+    .greeting-text h2 { font-family: var(--font-display); font-size: 26px; color: var(--coral); margin-bottom: 2px; }
+    .greeting-text p  { font-size: 13px; color: var(--teal); font-weight: 600; }
+
+    .logout-btn {
+      padding: 10px 20px; background: var(--coral); color: white; border: none;
+      border-radius: var(--radius-full); font-family: var(--font-main);
+      font-weight: 700; font-size: 14px; cursor: pointer;
+      text-decoration: none; transition: all 0.2s;
+    }
+    .logout-btn:hover { background: var(--coral-dark); }
+
+    /* Main content */
+    .main { max-width: 1100px; margin: 0 auto; padding: 0 24px 40px; }
+
+    /* Alerts */
+    .alerts-section {
+      background: white; border-radius: var(--radius-xl);
+      padding: 24px; margin-bottom: 28px; box-shadow: var(--shadow-sm);
+    }
+    .alerts-header {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;
+    }
+    .alerts-title {
+      font-family: var(--font-display); font-size: 22px; color: var(--text-dark);
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    .alert-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 16px; border-radius: var(--radius-md);
+      margin-bottom: 8px; font-size: 14px; font-weight: 600;
+    }
+    .alert-item.warning { background: #fff9e6; color: #856404; }
+    .alert-item.success { background: #d4f4dd; color: #155724; }
+    .alert-item.message { background: #f0f7fa; color: var(--teal); }
+    .alert-item.doubt   { background: #fff0e6; color: #8b4000; }
+
+    /* Heroes grid */
+    .heroes-title {
+      font-family: var(--font-display); font-size: 22px; color: var(--text-dark);
+      display: flex; align-items: center; gap: 8px; margin-bottom: 20px;
+    }
+    .heroes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 340px));
+      gap: 20px; margin-bottom: 24px; justify-content: center;
+    }
+    .hero-card {
+      background: white; border-radius: var(--radius-xl); padding: 20px 16px;
+      box-shadow: var(--shadow-sm); text-decoration: none; color: inherit;
+      display: flex; flex-direction: column; transition: all 0.25s; min-height: 400px;
+    }
+    .hero-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+
+    .hero-card-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+    .hero-avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: linear-gradient(135deg,#a0d8e8,#6ab8ce);
+      display: flex; align-items: center; justify-content: center; font-size: 22px;
+    }
+    .hero-card-info h3 { font-family: var(--font-display); font-size: 20px; color: var(--teal); margin-bottom: 2px; }
+    .hero-card-info p  { font-size: 13px; color: var(--text-light); }
+
+    .archetype-badge {
+      display: flex; align-items: center; gap: 8px;
+      background: #f8f0ff; border-radius: var(--radius-md); padding: 10px 14px; margin-bottom: 16px;
+    }
+    .arch-icon { font-size: 20px; }
+    .arch-name { font-size: 14px; font-weight: 700; color: #7c3aed; }
+    .arch-desc { font-size: 12px; color: var(--text-light); }
+
+    .traits-label {
+      font-size: 12px; font-weight: 700; color: var(--text-light);
+      text-transform: uppercase; letter-spacing: 0.8px; margin: 20px 0 10px;
+    }
+    .trait-mini { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .trait-mini-label { font-size: 13px; color: var(--text-mid); width: 80px; }
+    .trait-mini-bar   { flex: 1; height: 8px; background: #f0f7fa; border-radius: 4px; overflow: hidden; }
+    .trait-mini-fill  { height: 100%; border-radius: 4px; }
+    .trait-mini-pct   { font-size: 12px; color: var(--text-light); width: 32px; text-align: right; }
+
+    .hero-card-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: auto; padding-top: 10px; border-top: 1px solid #f0f7fa;
+    }
+    .hp-display { display: flex; align-items: center; gap: 6px; }
+    .hp-icon    { font-size: 18px; }
+    .hp-val     { font-family: var(--font-display); font-size: 18px; color: var(--teal); }
+    .hp-lab     { font-size: 12px; color: var(--text-light); }
+    .trust-display .trust-val { font-weight: 800; color: var(--text-dark); font-size: 16px; }
+    .trust-display .trust-lab { font-size: 12px; color: var(--text-light); }
+    .doubt-warning { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #e67e22; font-weight: 700; margin-top: 6px; }
+
+    .add-kid-btn {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      padding: 14px 28px; background: var(--yellow); color: var(--text-dark);
+      border-radius: var(--radius-full); font-family: var(--font-display); font-size: 18px;
+      cursor: pointer; border: none; text-decoration: none; transition: all 0.2s;
+      box-shadow: var(--shadow-sm); margin: 0 auto;
+    }
+    .add-kid-btn:hover { background: var(--yellow-dark); transform: scale(1.03); }
+
+    /* Link-child modal */
+    .link-modal-content {
+      background: white; padding: 30px; border-radius: var(--radius-xl);
+      text-align: center; width: 90%; max-width: 400px;
+    }
+    .link-modal-content h3 { color: var(--teal); margin-bottom: 16px; font-family: var(--font-display); font-size: 22px; }
+    .link-modal-content .form-input { margin: 0 0 20px; }
+    .link-modal-btns { display: flex; gap: 10px; justify-content: center; }
+
+    @media (max-width: 640px) {
+      .top-bar { padding: 12px 16px; }
+      .main    { padding: 0 12px 32px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="parent-greeting">
+    <div class="parent-avatar">👩‍👧</div>
+    <div class="greeting-text">
+      <h2 id="parentTitle">Hi, Parent!</h2>
+      <p>Welcome to your Garden Watch</p>
+    </div>
+  </div>
+  <button onclick="logout('parent-login.html')" class="logout-btn">Logout</button>
+</div>
+
+<div class="main">
+  <div class="alerts-section">
+    <div class="alerts-header">
+      <div class="alerts-title">🔔 Alerts</div>
+    </div>
+    <div id="alertsList">
+      <div class="alert-item message">Loading daily updates…</div>
+    </div>
+  </div>
+
+  <div class="heroes-title">⭐ Your Heroes</div>
+  <div class="heroes-grid" id="heroesGrid">
+    <p style="text-align:center;grid-column:1/-1;">Fetching your little heroes…</p>
+  </div>
+
+  <button onclick="openAddChild()" class="add-kid-btn">+ Add a new hero</button>
+</div>
+
+<!-- Link child modal -->
+<div class="modal-overlay" id="linkModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;z-index:1000;">
+  <div class="link-modal-content">
+    <h3>Link New Hero</h3>
+    <input id="linkTokenInput" class="form-input" placeholder="Enter link token…">
+    <div class="link-modal-btns">
+      <button class="btn btn-teal" onclick="confirmLink()">Confirm</button>
+      <button class="btn btn-outline" onclick="closeModal('linkModal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script>
+  const currentToken    = getToken();
+
+  const AVATAR_MAP = {
+    'cat':'🐱','butterfly':'🦋','lion':'🦁','tiger':'🐯','panda':'🐼',
+    '🦁':'🦁','🦋':'🦋','🌸':'🌸','🐯':'🐯','🦊':'🦊','🐸':'🐸','🦄':'🦄','🐼':'🐼'
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    if (!requireAuth('parent-login.html')) return;
+    loadDashboard();
+    setInterval(loadDashboard, 60000);
+  });
+
+  async function loadDashboard() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/main-dashboard`, {
+        headers: { 'Authorization': `Bearer ${currentToken}`, 'Content-Type': 'application/json' }
+      });
+      if (response.status === 401) { logout('parent-login.html'); return; }
+      const data = await response.json();
+      renderAlerts(data.alerts || []);
+      renderHeroes(data.heroes || []);
+    } catch {
+      document.getElementById('alertsList').innerHTML = '<div class="alert-item warning">⚠️ Connection error. Check API.</div>';
+    }
+  }
+
+  function renderAlerts(alerts) {
+    const container = document.getElementById('alertsList');
+    if (!alerts.length) { container.innerHTML = '<div class="alert-item message">All clear!</div>'; return; }
+    container.innerHTML = alerts.map(a => {
+      const cls = a.type === 'Doubt' ? 'warning' : 'message';
+      return `<div class="alert-item ${cls}"><span>${a.message}</span></div>`;
+    }).join('');
+  }
+
+  function renderHeroes(heroes) {
+    const grid = document.getElementById('heroesGrid');
+    if (!heroes.length) {
+      grid.innerHTML = '<p style="text-align:center;grid-column:1/-1;">No kids linked yet.</p>';
+      return;
+    }
+    grid.innerHTML = heroes.map(hero => {
+      const icon      = AVATAR_MAP[hero.characterType?.toLowerCase()] || '🦸';
+      const isLowTrust = hero.trustScore < 70;
+      const hpColor   = isLowTrust ? '#e07878' : 'var(--teal)';
+      return `
+        <a href="parent-child-insights.html?heroId=${hero.id}" class="hero-card">
+          <div class="hero-card-header">
+            <div class="hero-avatar">${icon}</div>
+            <div class="hero-card-info"><h3>${hero.fullName}</h3><p>Age ${hero.age || 0}</p></div>
+          </div>
+          <div class="archetype-badge">
+            <div class="arch-icon">🕐</div>
+            <div><div class="arch-name">The Caring Explorer</div><div class="arch-desc">Explores the world with empathy and wonder</div></div>
+          </div>
+          <div class="traits-label">Personality Traits</div>
+          ${renderTrait('Curiosity',    hero.academicPct,  '#4fc3d8')}
+          ${renderTrait('Persistence', hero.mentalPct,    '#f5c842')}
+          ${renderTrait('Kindness',     hero.socialPct,    '#7bc67e')}
+          ${renderTrait('Spiritual',    hero.religiousPct, '#c8a8e0')}
+          ${renderTrait('Vitality',     hero.physicalPct,  '#e07878')}
+          <div class="hero-card-footer">
+            <div class="hp-display">
+              <span class="hp-icon">${isLowTrust ? '⚠️' : '💎'}</span>
+              <div><div class="hp-val" style="color:${hpColor}">${hero.trustScore} HP</div><div class="hp-lab">Honest Points</div></div>
+            </div>
+            <div class="trust-display">
+              <div class="trust-val">${hero.trustScore}%</div>
+              <div class="trust-lab">Trust</div>
+            </div>
+          </div>
+          ${isLowTrust ? '<div class="doubt-warning">⚠️ Doubt State — Review Required</div>' : ''}
+        </a>`;
+    }).join('');
+  }
+
+  function renderTrait(label, value, color) {
+    return `
+      <div class="trait-mini">
+        <div class="trait-mini-label">${label}</div>
+        <div class="trait-mini-bar"><div class="trait-mini-fill" style="width:${value}%;background:${color}"></div></div>
+        <div class="trait-mini-pct">${Math.round(value)}%</div>
+      </div>`;
+  }
+
+  function openAddChild() { window.location.href = 'child-signup.html?mode=parent'; }
+
+  async function confirmLink() {
+    const token = document.getElementById('linkTokenInput').value.trim();
+    if (!token) { alert('Please enter a token'); return; }
+    try {
+      const res = await fetch(`${API_BASE_URL}/link-child-by-token`, {
+        method:  'POST',
+        headers: { 'Authorization': `Bearer ${currentToken}`, 'Content-Type': 'application/json' },
+        body:    JSON.stringify(token)
+      });
+      if (res.ok) { alert('Hero linked successfully! 🎉'); location.reload(); }
+      else { const err = await res.text(); alert(err || 'Invalid Token'); }
+    } catch { alert('Network error'); }
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Growth Journey</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-color: #c5f2f6; /* الخلفية اللباني المبهجة والهادئة */
+            --path-default: #cbd5e1; /* لون الخط الرمادي قبل الاكتمال */
+            --path-active: #ffd043; /* لون الخط الأصفر المتعرج عند الاكتمال */
+            --btn-back-color: #f5c225;
+            
+            --lv1-color: #f2f9d8;
+            --lv2-color: #c5f2f6;
+            --lv3-color: #ffd8df;
+            --lv4-color: #fff2cc;
+            --lv5-color: #e2f4cb;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Fredoka', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(#b2e5ea 15%, transparent 15%);
+            background-size: 20px 20px;
+            color: #2d4a43;
+            padding: 20px;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .journey-header-section {
+            text-align: center;
+            margin-top: 50px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: -30px;
+            left: 20px;
+            background-color: var(--btn-back-color);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 0px #d48806;
+            transition: all 0.1s ease;
+            text-decoration: none;
+            display: inline-block;
+            z-index: 20;
+        }
+
+        .back-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 0px 0px transparent;
+        }
+
+        .journey-title {
+            color: #e6536f;
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 0px #fff;
+            margin-bottom: 5px;
+        }
+
+        .journey-subtitle {
+            color: #558b8f;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        /* --- حاوية الخريطة ذات الخط المتعرج الحقيقي --- */
+        .roadmap-container {
+            position: relative;
+            max-width: 850px;
+            margin: 0 auto;
+            padding-top: 40px;
+        }
+
+        /* حاوية الـ SVG المسؤول عن رسم التعرج الانسيابي خلف الكروت والدائرة */
+        .svg-zigzag-space {
+            position: absolute;
+            top: 65px;
+            left: 0;
+            width: 100%;
+            height: calc(100% - 130px);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .zigzag-base-path {
+            stroke: var(--path-default);
+            stroke-width: 10;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+        }
+
+        .zigzag-progress-path {
+            stroke: var(--path-active);
+            stroke-width: 10;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+            stroke-dasharray: 2000;
+            stroke-dashoffset: 2000;
+            transition: stroke-dashoffset 1s ease-in-out;
+        }
+
+        /* هيكل توزيع العناصر يميناً ويساراً بالتوازي مع تعرج الخط */
+        .timeline-row {
+            position: relative;
+            width: 100%;
+            margin-bottom: 90px;
+            display: flex;
+            align-items: center;
+            z-index: 5;
+        }
+
+        .timeline-row.left-layout {
+            justify-content: flex-start;
+            padding-right: 55px;
+            padding-left: 5%;
+        }
+
+        .timeline-row.right-layout {
+            justify-content: flex-end;
+            padding-left: 55px;
+            padding-right: 5%;
+        }
+
+        /* مكنونات الدوائر (عقد المستويات) متمركزة في المنتصف تماماً */
+        .level-pointer-node {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 52px;
+            height: 52px;
+            background: #ffffff;
+            border: 4px solid var(--path-default);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            color: #64748b;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+
+        /* إضاءة الدائرة عند الاكتمال التلقائي */
+        .level-pointer-node.completed {
+            background: #52c41a !important;
+            border-color: #52c41a !important;
+            color: white !important;
+            box-shadow: 0 0 15px rgba(82, 196, 26, 0.6);
+        }
+
+        /* كروت المستويات الأنيقة */
+        .level-details-card {
+            width: 42%;
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 22px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.03);
+            border: 2px solid #ffffff;
+            transition: transform 0.2s;
+        }
+
+        .level-details-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .card-header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .status-tag {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            border-radius: 12px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .title-text {
+            font-size: 19px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .desc-text {
+            font-size: 13.5px;
+            color: #64748b;
+            margin-bottom: 14px;
+            line-height: 1.4;
+        }
+
+        .quests-box-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            background: rgba(0,0,0,0.015);
+            padding: 12px;
+            border-radius: 16px;
+        }
+
+        .single-quest-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        /* حماية الـ Checkbox لمنع المستخدم وتفعيل الأوتوماتيك */
+        .single-quest-item input[type="checkbox"] {
+            width: 17px;
+            height: 17px;
+            accent-color: #52c41a;
+        }
+
+        /* مربع العبارة التوضيحية والتشجيعية في نهاية الصفحة المرجوع بناءً على طلبك */
+        .bottom-info-notice-box {
+            max-width: 600px;
+            margin: 40px auto 20px auto;
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+            border: 3px dashed #ffd043;
+        }
+
+        .bottom-info-notice-box p {
+            font-size: 14px;
+            font-weight: 600;
+            color: #475569;
+            line-height: 1.5;
+        }
+
+        /* أزرار التنقل الجانبية */
+        .side-navigator {
+            position: fixed;
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .nav-arrow-btn {
+            width: 45px;
+            height: 45px;
+            background: #fff;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #e6536f;
+            cursor: pointer;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+            transition: all 0.2s ease;
+        }
+
+        .nav-arrow-btn:hover {
+            background: #e6536f;
+            color: #fff;
+            transform: scale(1.1);
+        }
+
+        /* التجاوب مع الشاشات الصغيرة والموبايل ليتحول لعمودي ثابت */
+        @media (max-width: 650px) {
+            .svg-zigzag-space { display: none; }
+            .timeline-row { flex-direction: column; align-items: flex-start; padding-left: 70px !important; padding-right: 20px !important; margin-bottom: 40px; }
+            .level-pointer-node { left: 35px; transform: translateX(-50%); }
+            .level-details-card { width: 100%; }
+            .side-navigator { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="journey-header-section">
+        <a href="leafy.html" class="back-btn">← Profile</a>
+        <h1 class="journey-title">🌱 My Growth Journey</h1>
+        <p class="journey-subtitle">Complete quests to level up your garden!</p>
+    </div>
+
+    <div class="roadmap-container">
+        
+        <svg class="svg-zigzag-space" viewBox="0 0 850 800" preserveAspectRatio="none">
+            <path class="zigzag-base-path" d="M 425,0 Q 150,100 425,200 T 425,400 T 425,600 T 425,800" />
+            <path id="dynamicProgressPath" class="zigzag-progress-path" d="M 425,0 Q 150,100 425,200 T 425,400 T 425,600 T 425,800" />
+        </svg>
+
+        <div class="timeline-row left-layout" id="row-1">
+            <div class="level-pointer-node" id="circle-1">1</div>
+            <div class="level-details-card" style="background-color: var(--lv1-color);">
+                <div class="card-header-flex">
+                    <span class="status-tag" id="tag-1" style="background-color: #d8f5a3;">Active Level</span>
+                </div>
+                <h3 class="title-text">Level 1: Sprout Scout 🌱</h3>
+                <p class="desc-text">Your journey begins! Start nourishing your heart and habits.</p>
+                <div class="quests-box-list">
+                    <label class="single-quest-item"><input type="checkbox" checked disabled> 🕋 Complete 1 Spiritual Quest</label>
+                    <label class="single-quest-item"><input type="checkbox" checked disabled> 🥦 Eat healthy veggies today</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="timeline-row right-layout" id="row-2">
+            <div class="level-pointer-node" id="circle-2">2</div>
+            <div class="level-details-card" style="background-color: var(--lv2-color);">
+                <div class="card-header-flex">
+                    <span class="status-tag" id="tag-2" style="background-color: #cbd5e1;"><i class="fas fa-lock"></i> Locked</span>
+                </div>
+                <h3 class="title-text">Level 2: Blossom Buddy 🌸</h3>
+                <p class="desc-text">Grow your kindness and share beautiful smiles with everyone around.</p>
+                <div class="quests-box-list">
+                    <label class="single-quest-item"><input type="checkbox" disabled> 🤍 Help family with 2 home chores</label>
+                    <label class="single-quest-item"><input type="checkbox" disabled> 🏃‍♂️ Finish 1 Vitality movement activity</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="timeline-row left-layout" id="row-3">
+            <div class="level-pointer-node" id="circle-3">3</div>
+            <div class="level-details-card" style="background-color: var(--lv3-color);">
+                <div class="card-header-flex">
+                    <span class="status-tag" id="tag-3" style="background-color: #cbd5e1;"><i class="fas fa-lock"></i> Locked</span>
+                </div>
+                <h3 class="title-text">Level 3: Curiosity Captain 📖</h3>
+                <p class="desc-text">Supercharge your brain power! Read, discover, and learn brand new things.</p>
+                <div class="quests-box-list">
+                    <label class="single-quest-item"><input type="checkbox" disabled> 📚 Complete 3 School Homework Quests</label>
+                    <label class="single-quest-item"><input type="checkbox" disabled> 🧠 Solve 1 tricky puzzle quiz</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="timeline-row right-layout" id="row-4">
+            <div class="level-pointer-node" id="circle-4">4</div>
+            <div class="level-details-card" style="background-color: var(--lv4-color);">
+                <div class="card-header-flex">
+                    <span class="status-tag" id="tag-4" style="background-color: #cbd5e1;"><i class="fas fa-lock"></i> Locked</span>
+                </div>
+                <h3 class="title-text">Level 4: Resilience Ranger 🛡️</h3>
+                <p class="desc-text">Show the power of patience. True heroes stay strong and never give up.</p>
+                <div class="quests-box-list">
+                    <label class="single-quest-item"><input type="checkbox" disabled> 🕋 Complete 5 Spiritual Quests in a row</label>
+                    <label class="single-quest-item"><input type="checkbox" disabled> 🤝 Do a random act of kindness</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="timeline-row left-layout" id="row-5">
+            <div class="level-pointer-node" id="circle-5">5</div>
+            <div class="level-details-card" style="background-color: var(--lv5-color);">
+                <div class="card-header-flex">
+                    <span class="status-tag" id="tag-5" style="background-color: #cbd5e1;"><i class="fas fa-lock"></i> Locked</span>
+                </div>
+                <h3 class="title-text">Level 5: Master Guardian 🏆</h3>
+                <p class="desc-text">The ultimate garden champion! Your inner light shines brightest.</p>
+                <div class="quests-box-list">
+                    <label class="single-quest-item"><input type="checkbox" disabled> ⭐ Reach 100% on all Power Orbs</label>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="bottom-info-notice-box">
+        <p>💡 <b>Note:</b> You can't check these quests manually! Your growth map tracks your progress automatically. Complete your main dashboard quests to unlock next amazing levels! ✨</p>
+    </div>
+
+    <div class="side-navigator">
+        <button class="nav-arrow-btn" onclick="navigateTimeline('up')"><i class="fas fa-chevron-up"></i></button>
+        <button class="nav-arrow-btn" onclick="navigateTimeline('down')"><i class="fas fa-chevron-down"></i></button>
+    </div>
+
+    <script src="script.js"></script>
+<script>
+        // دالة الفحص الأوتوماتيكي وتلوين خط الزجزاج وإدارة حالة الأقفال الذكية جنباً إلى جنب مع المستويات
+        function checkLevelsAutomation() {
+            let totalLevels = 5;
+            let completedCount = 0;
+
+            for (let i = 1; i <= totalLevels; i++) {
+                const row = document.getElementById(`row-${i}`);
+                if (!row) continue;
+
+                const checkboxes = row.querySelectorAll('.quests-box-list input[type="checkbox"]');
+                const totalQuests = checkboxes.length;
+                const checkedQuests = row.querySelectorAll('.quests-box-list input[type="checkbox"]:checked').length;
+
+                const nodeCircle = document.getElementById(`circle-${i}`);
+                const statusTag = document.getElementById(`tag-${i}`);
+
+                // الفحص والتأكد التلقائي من حالة اكتمال المستوى
+                if (totalQuests > 0 && checkedQuests === totalQuests) {
+                    nodeCircle.classList.add('completed');
+                    nodeCircle.innerHTML = '<i class="fas fa-check"></i>';
+                    
+                    if(statusTag) {
+                        statusTag.style.backgroundColor = "#d8f5a3";
+                        statusTag.innerHTML = "Completed ✨";
+                    }
+                    completedCount = i;
+                } else {
+                    nodeCircle.classList.remove('completed');
+                    
+                    // إدارة ظهور القفل أو الأيقونة النشطة حسب حالة المستوى السابق
+                    if (i === 1 || i <= completedCount + 1) {
+                        // المستوى مفتوح ونشط حالياً للعمل عليه
+                        if(statusTag) {
+                            if(i === 5) {
+                                statusTag.style.backgroundColor = "#bfeaa5";
+                                statusTag.innerHTML = "Grand Prize 🏆";
+                            } else {
+                                statusTag.style.backgroundColor = "#a3e9f5";
+                                statusTag.innerHTML = "Active Level";
+                            }
+                        }
+
+                        // وضع الأيقونة الأصلية للمستوى
+                        if(i === 2) {
+                            nodeCircle.innerHTML = '<i class="fas fa-award" style="color: #29a0b1; font-size: 19px;"></i>';
+                        } else if(i === 3) {
+                            nodeCircle.innerHTML = '<i class="fas fa-spa" style="color: #e6536f; font-size: 19px;"></i>';
+                        } else if(i === 4) {
+                            nodeCircle.innerHTML = '<i class="fas fa-sun" style="color: #d48806; font-size: 19px;"></i>';
+                        } else if(i === 5) {
+                            nodeCircle.innerHTML = '<i class="fas fa-trophy" style="color: #52c41a; font-size: 19px;"></i>';
+                        } else {
+                            nodeCircle.textContent = i;
+                        }
+                    } else {
+                        // المستوى مازال مغلقاً تماماً (يظهر قفل بالدائرة وبجانب التاج)
+                        if(statusTag) {
+                            statusTag.style.backgroundColor = "#cbd5e1";
+                            statusTag.innerHTML = '<i class="fas fa-lock"></i> Locked';
+                        }
+                        nodeCircle.innerHTML = '<i class="fas fa-lock" style="color: #94a3b8; font-size: 16px;"></i>';
+                    }
+                }
+            }
+
+            // إضاءة وتلوين خط السير المتعرج SVG برمجياً بناءً على آخر مستوى مكتمل
+            const progressPath = document.getElementById('dynamicProgressPath');
+            if (progressPath) {
+                const pathLength = progressPath.getTotalLength();
+                progressPath.style.strokeDasharray = pathLength;
+                
+                const percentages = [1, 0.82, 0.58, 0.35, 0.12, 0]; 
+                progressPath.style.strokeDashoffset = pathLength * percentages[completedCount];
+            }
+        }
+
+        let currentFocusIndex = 1;
+        const totalRows = 5;
+
+        function navigateTimeline(direction) {
+            if (direction === 'down' && currentFocusIndex < totalRows) {
+                currentFocusIndex++;
+            } else if (direction === 'up' && currentFocusIndex > 1) {
+                currentFocusIndex--;
+            }
+            
+            const targetRow = document.getElementById(`row-${currentFocusIndex}`);
+            if (targetRow) {
+                targetRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        window.onload = checkLevelsAutomation;
+    </script>
+
+<script>
+(async function loadJourneyData() {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    try {
+        const res = await fetch(`${API_BASE_URL}/Journey/progress`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        
+        const currentLevel = data.currentLevel || 1;
+        const subtitle = document.querySelector('.journey-subtitle`);
+        if (subtitle) subtitle.textContent = `Level ${currentLevel} • ${data.nextMilestone || 'Keep going!'}`;
+        
+        // Mark completed levels
+        for (let i = 1; i <= Math.min(currentLevel, 5); i++) {
+            const circle = document.getElementById(`circle-${i}`);
+            const tag    = document.getElementById(`tag-${i}`);
+            if (i < currentLevel && circle) {
+                circle.classList.add('completed');
+            }
+        }
+    } catch(e) { console.error('Journey load error', e); }
+})();
+</script>
+
+</body>
+</html>

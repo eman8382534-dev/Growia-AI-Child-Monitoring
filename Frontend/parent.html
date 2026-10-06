@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Growia - Link Parent</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .invite-card { background: white; max-width: 500px; margin: 50px auto; padding: 40px 20px; border-radius: 30px; text-align: center; border: 1px solid #eee; }
+        .form-input { width: 80%; padding: 12px; border-radius: 20px; border: 2px solid #eee; font-family: inherit; margin-bottom: 15px; }
+    </style>
+    <link rel="stylesheet" href="leafy.css">
+</head>
+<body>
+    <section id="link-parent-page" style="padding: 20px 5%;">
+        <div class="invite-card" id="invite-step-1">
+            <div style="font-size:4rem; margin-bottom:20px;">🌳</div>
+            <h2 style="color:#FF8A8A;">Invite a Grown-up to the Garden!</h2>
+            <p style="color:#4A6D6D; margin-bottom:30px;">Enter Mom or Dad's email so they can watch your garden grow 🌿</p>
+            <input type="email" id="parent-email" placeholder="mom@example.com" class="form-input"><br>
+            <button class="btn" style="background: #FF8A8A; color: white; border: none; padding: 12px 30px; border-radius: 20px; font-weight: bold; cursor: pointer; width: 85%;" onclick="sendInvitation()">Send Invitation 💌</button>
+            <p><a href="leafy.html" style="color: #4A6D6D; text-decoration: none; font-size: 0.9rem; display: inline-block; margin-top: 15px;">Back to My Garden 🌻</a></p>
+        </div>
+
+        <div class="invite-card" id="invite-success" style="display:none;">
+            <div style="font-size:4rem; margin-bottom:20px;">💌</div>
+            <h2 style="color:#FF8A8A;">Invitation Sent!</h2>
+            <p style="color:#4A6D6D;">Leafy is waiting to meet them! 🌿</p>
+            <div style="background:#F9FBE7; padding:20px; border-radius:20px; margin:20px 0; border:1px solid #DCE775;">
+                <p style="font-style:italic; font-size:0.9rem; margin:0;">"A new friend is joining the garden! How exciting!"</p>
+            </div>
+            <a href="leafy.html" class="btn" style="background: #FFD97D; color: #333; text-decoration: none; padding: 12px 30px; border-radius: 20px; font-weight: bold; display: inline-block; width: 80%;">Back to My Garden 🌻</a>
+        </div>
+    </section>
+
+    <script>
+        function sendInvitation() {
+            let email = document.getElementById('parent-email').value;
+            if(email) {
+                document.getElementById('invite-step-1').style.display = 'none';
+                document.getElementById('invite-success').style.display = 'block';
+            } else {
+                alert('Please enter an email address ✍️');
+            }
+        }
+    </script>
+    
+
+<script src="script.js"></script>
+<script>
+async function sendInvitation() {
+    const email = document.getElementById('parent-email').value.trim();
+    if (!email) { alert('Please enter an email address ✍️'); return; }
+    
+    const token = localStorage.getItem('token');
+    if (!token) { window.location.href = 'child_login.html'; return; }
+
+    try {
+        // Generate link token first
+        const tokenRes = await fetch(`${API_BASE_URL}/Children/generate-link-token`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+        });
+        if (!tokenRes.ok) { alert('Could not generate link token`); return; }
+        const tokenData = await tokenRes.json();
+
+        // Show success with the link token
+        document.getElementById('invite-step-1').style.display = 'none';
+        const successDiv = document.getElementById('invite-success');
+        successDiv.style.display = 'block';
+        successDiv.innerHTML += `<div style="background:#FFF9E6;padding:15px;border-radius:15px;margin:15px 0;border:2px solid #FFD97D;"><strong>Your link code:</strong><br><span style="font-size:2rem;font-weight:bold;color:#FF8A8A;">${tokenData.linkToken}</span><br><small>Share this code with your parent!</small></div>`;
+    } catch(e) {
+        alert('Connection error. Make sure server is running!');
+    }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Growia - Parent Login</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body { background: var(--peach); }
+
+    .success-box {
+      display: none; margin-top: 16px; padding: 12px 16px;
+      background: #d4edda; border-radius: var(--radius-md);
+      font-size: 14px; color: #155724; font-weight: 600; text-align: center;
+    }
+    .success-box.show { display: block; }
+  </style>
+</head>
+<body>
+
+<div class="page-centered">
+  <h1 class="page-title" id="pageTitle">Welcome Back!</h1>
+  <p class="page-sub">Your Garden Watch awaits</p>
+
+  <div class="auth-card">
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchTab('login')">Login</button>
+      <button class="auth-tab"        onclick="switchTab('signup')">Sign Up</button>
+    </div>
+
+    <div class="auth-form active" id="loginForm">
+      <div class="form-group">
+        <label class="form-label" for="loginEmail">Email Address</label>
+        <input type="email" class="form-input" id="loginEmail" placeholder="parent@email.com" autocomplete="email">
+        <span class="error-msg" id="error-loginEmail"></span>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="loginPass">Password</label>
+        <input type="password" class="form-input" id="loginPass" placeholder="Your password..." autocomplete="current-password">
+        <span class="eye-icon" onclick="togglePass('loginPass')"></span>
+        <span class="error-msg" id="error-loginPass"></span>
+      </div>
+      <span class="forgot-link" onclick="openModal('forgotModal')">Forgot your password?</span>
+      <button class="btn-auth" id="loginBtn" onclick="doLogin()">Enter Garden Watch</button>
+    </div>
+
+    <div class="auth-form" id="signupForm">
+      <div class="form-group">
+        <label class="form-label" for="parentName">Your Name</label>
+        <input type="text" class="form-input" id="parentName" placeholder="Your name..." autocomplete="name">
+        <span class="error-msg" id="error-parentName"></span> 
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="parentEmail">Email Address</label>
+        <input type="email" class="form-input" id="parentEmail" placeholder="parent@email.com" autocomplete="email">
+        <span class="error-msg" id="error-parentEmail"></span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="parentPass">Password</label>
+        <input type="password" class="form-input" id="parentPass" placeholder="Create a password..." autocomplete="new-password">
+        <span class="eye-icon" onclick="togglePass('parentPass')"></span>
+        <span class="error-msg" id="error-parentPass"></span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="parentConfirmPass">Confirm Password</label>
+        <input type="password" class="form-input" id="parentConfirmPass" placeholder="Confirm your password..." autocomplete="new-password">
+        <span class="error-msg" id="error-parentConfirmPass"></span>
+      </div>
+
+      <button class="btn-auth coral" id="signupBtn" onclick="doSignup()">Create My Garden</button>
+    </div>
+
+    <a href="index.html" class="back-link">← Back</a>
+  </div>
+</div>
+
+<div class="modal-overlay" id="forgotModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('forgotModal')">✕</button>
+    <div class="modal-title" style="color:var(--coral);">Reset Password</div>
+    <p class="modal-subtitle">Enter your email and we'll send you a reset link</p>
+    <div class="form-group">
+      <label class="form-label" for="resetEmail">Email Address</label>
+      <input type="email" class="form-input" id="resetEmail" placeholder="parent@email.com" autocomplete="email">
+    </div>
+    <button class="btn-auth" style="margin-top:8px;" onclick="sendReset()">Send Reset Link</button>
+    <div id="resetSuccess" class="success-box">Check your email for the reset link!</div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script>
+  const API_BASE = API_BASE_URL;
+
+  /* ── Login ──────────────────────────────────────────── */
+  async function doLogin() {
+    const email    = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPass').value;
+
+    clearFormErrors();
+
+    if (!isValidEmail(email)) { showFieldError('loginEmail', 'Valid email required'); return; }
+    if (!password)            { showFieldError('loginPass',  'Password is required'); return; }
+
+    const btn = document.getElementById('loginBtn');
+    btn.disabled    = true;
+    btn.textContent = 'Entering...';
+
+    try {
+      const res = await fetch(`${API_BASE}/Auth/login/parent`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ UsernameOrEmail: email, Password: password })
+      });
+      const result = await res.json();
+      if (res.ok) {
+        setToken(result.Token || result.token || result.data?.token);
+        localStorage.setItem('parentEmail', email);
+        window.location.href = 'parent-dashboard.html';
+      } else {
+        showFieldError('loginPass', 'Invalid email or password');
+      }
+    } catch {
+      showFieldError('loginPass', 'Connection error');
+    } finally {
+      btn.disabled    = false;
+      btn.textContent = 'Enter Garden Watch';
+    }
+  }
+
+  /* ── Sign-up Full Method ────────────────────────────────────────── */
+  async function doSignup() {
+    clearFormErrors();
+
+    const name        = document.getElementById('parentName').value.trim();
+    const email       = document.getElementById('parentEmail').value.trim();
+    const password    = document.getElementById('parentPass').value;
+    const confirmPass = document.getElementById('parentConfirmPass').value;
+    let hasError = false;
+
+    if (!name) { 
+        showFieldError('parentName', 'Name is required'); 
+        hasError = true; 
+    } else if (name.length < 3) { 
+        showFieldError('parentName', 'Name must be at least 3 characters'); 
+        hasError = true; 
+    }
+
+    if (!email) { 
+        showFieldError('parentEmail', 'Email is required'); 
+        hasError = true; 
+    } else if (!isValidEmail(email)) { 
+        showFieldError('parentEmail', 'Invalid email format'); 
+        hasError = true; 
+    }
+
+    if (!password) { 
+        showFieldError('parentPass', 'Password is required'); 
+        hasError = true; 
+    } else if (password.length < 6) { 
+        showFieldError('parentPass', 'Password must be at least 6 characters'); 
+        hasError = true; 
+    }
+
+    if (!confirmPass) { 
+        showFieldError('parentConfirmPass', 'Please confirm your password'); 
+        hasError = true; 
+    } else if (password !== confirmPass) { 
+        showFieldError('parentConfirmPass', 'Passwords do not match'); 
+        hasError = true; 
+    }
+
+    if (hasError) return;
+
+    const btn = document.getElementById('signupBtn');
+    btn.disabled = true;
+    btn.textContent = 'Creating Your Garden...';
+
+    try {
+        const res = await fetch(`${API_BASE}/Auth/register/gradient`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                Name: name, 
+                Email: email, 
+                Password: password, 
+                ConfirmPassword: confirmPass 
+            })
+        });
+
+        const result = await res.json();
+
+        if (res.ok) {
+            alert('Your garden has been created successfully!');
+            setTimeout(() => doLoginAfterSignup(email, password), 1500);
+        } 
+        else {
+            if (result.errors && Array.isArray(result.errors)) {
+                result.errors.forEach(err => {
+                    if (err.includes("Name")) {
+                        showFieldError('parentName', '' + err);
+                    } 
+                    else if (err.includes("Email")) {
+                        showFieldError('parentEmail', '' + err);
+                    } 
+                    else if (err.includes("Password") || err.includes("characters")) {
+                        showFieldError('parentPass', '' + err);
+                    }
+                });
+            } 
+            else if (result.message && result.message.includes("registered")) {
+                showFieldError('parentEmail', result.message);
+            } 
+            else {
+                alert(result.message || 'Signup failed. Please try again.');
+            }
+        }
+    } catch (e) {
+        console.error("Signup fetch error:", e);
+        alert('Connection error. Is the server running?');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Create My Garden';
+    }
+  }
+
+  async function doLoginAfterSignup(email, password) {
+    try {
+      const res = await fetch(`${API_BASE}/Auth/login/parent`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ UsernameOrEmail: email, Password: password })
+      });
+      if (res.ok) {
+        const result = await res.json();
+        setToken(result.token || result.Token);
+        window.location.href = 'parent-dashboard.html';
+      } else { switchTab('login'); }
+    } catch { switchTab('login'); }
+  }
+
+  /* ── Tabs ───────────────────────────────────────────── */
+  function switchTab(tab, email = '') {
+    clearFormErrors();
+    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+
+    const isLogin = tab === 'login';
+    document.querySelectorAll('.auth-tab')[isLogin ? 0 : 1].classList.add('active');
+    document.getElementById(tab + 'Form').classList.add('active');
+    document.getElementById('pageTitle').textContent = isLogin ? 'Welcome Back!' : 'Join Our Garden!';
+
+    if (isLogin && email) {
+      document.getElementById('loginEmail').value = email;
+      document.getElementById('loginPass').focus();
+    }
+  }
+
+  /* ── Forgot Password ────────────────────────────────── */
+  async function sendReset() {
+    const email   = document.getElementById('resetEmail').value.trim();
+    const success = document.getElementById('resetSuccess');
+    if (!email) return;
+
+    try {
+      const res = await fetch(`${API_BASE}/Auth/forgot-password`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ Email: email })
+      });
+      if (res.ok) {
+        success.classList.add('show');
+        setTimeout(() => { closeModal('forgotModal'); success.classList.remove('show'); }, 2500);
+      }
+    } catch { alert('Connection error'); }
+  }
+</script>
+</body>
+</html>

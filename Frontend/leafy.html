@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Growia - Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="leafy.css">
+    <link rel="stylesheet" >
+    <style>
+        /* التنسيقات الخاصة بالقائمة المنسدلة الناتجة عن حذف الجافا سكريبت المعقد */
+        .dropdown { position: relative; display: inline-block; }
+        .dropdown-content { display: none; position: absolute; background-color: #fff; min-width: 180px; box-shadow: 0px 8px 16px rgba(0,0,0,0.2); z-index: 100; border-radius: 10px; right: 0; }
+        .dropdown-content a { color: #333; padding: 12px 16px; text-decoration: none; display: block; cursor: pointer; }
+        .dropdown-content a:hover { background-color: #f1f1f1; border-radius: 10px; }
+        .dropdown:hover .dropdown-content { display: block; }
+        .badge-circle.active-dot { background: #FFD97D; }
+        .dot.active-dot { background: #FFD97D; }
+    </style>
+    <link rel="stylesheet" href="leafy.css">
+</head>
+<body>
+
+    <!-- Dashboard Page -->
+    <section id="dashboard-page" style="padding: 20px 5%;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; flex-wrap:wrap; gap:15px;">
+            <div>
+                <p style="color:#FFB7B2; font-weight:bold; margin:0;">Good evening 👋</p>
+                <h1 style="color:#FF8A8A; margin:0; font-size:2.5rem;">Little Explorer</h1>
+            </div>
+            <div style="display:flex; align-items:center; gap:15px; flex-wrap:wrap;">
+                <div class="dropdown">
+                    <button class="btn" style="background:#fff; padding: 10px 20px; border-radius: 20px; border: 1px solid #ccc;">More ▾</button>
+                    <div class="dropdown-content">
+                        <a href="journal.html">🗺️ My Growth Journey</a>
+                        <a href="heroprof.html">⚡ My Hero Powers</a>
+                        <a href="history.html">📜 History</a>
+                        <a href="parent.html">🔗 Link to Parent</a>
+                        <a href="setting.html">⚙️ Edit Settings</a>
+                    </div>
+                </div>
+                <div style="width:70px; height:70px; background:#FFB7B2; border-radius:25px; display:flex; align-items:center; justify-content:center; color:white; font-size:2rem; border:4px solid #fff; position:relative;">
+                    L <span style="position:absolute; bottom:-10px; right:-10px; background:#FFD97D; color:#333; font-size:12px; padding:2px 8px; border-radius:10px;">Lv.5</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-card" style="background: #FFF0F3; padding: 20px; border-radius: 30px; margin-bottom: 25px; cursor: pointer;" onclick="location.href='heroprof.html'">
+            <div style="display:flex; gap:20px; align-items:center; flex-wrap:wrap;">
+                <img src="https://cdn-icons-png.flaticon.com/512/628/628283.png" width="100" alt="Leafy">
+                <div>
+                    <h3 style="color:#FF8A8A;">What do you want to tell leafy about today??</h3>
+                    <p style="color:#666;">Leafy keeps secrets, you can trust him. 🤫</p>
+                    <div style="margin-top:15px;">
+                        <span style="font-weight:bold; color:#FF8A8A;">🏅 MY BADGES</span><br>
+                        <div style="margin-top:10px; display:flex; flex-wrap:wrap; gap: 5px;">
+                            <div class="badge-circle badge-active">🏆</div>
+                            <div class="badge-circle badge-active">⭐</div>
+                            <div class="badge-circle badge-active">🔥</div>
+                            <div class="badge-circle">🎯</div>
+                            <div class="badge-circle">⚡</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="background:#E0F7F9; padding:15px 25px; border-radius:30px; margin-bottom:25px; display:flex; align-items:center; gap:15px; border:1px solid #B2EBF2; flex-wrap:wrap;">
+            <span style="font-size:2rem;">✨</span>
+            <div>
+                <strong style="color:#00838F;">Leafy's Tip! 🌿</strong><br>
+                <small>You haven't logged water today - stay hydrated!</small>
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:25px; margin-bottom: 25px;">
+            <div class="dashboard-card" onclick="location.href='journal.html'" style="cursor: pointer; background: #fff; padding: 20px; border-radius: 30px; border: 1px solid #eee;">
+                <h3 style="color:#FF8A8A; display:flex; align-items:center; gap:10px;">📝 Daily Journal</h3>
+                <p style="color:#4DB6AC; font-size:0.9rem;">Tap to share your day with Leafy!</p>
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap:15px; margin-top:20px;">
+                    <div class="journal-btn" style="background: #f9f9f9; padding: 10px; border-radius: 15px; text-align: center;">🕋 Connected with Allah</div>
+                    <div class="journal-btn" style="background: #f9f9f9; padding: 10px; border-radius: 15px; text-align: center;">👥 Social time</div>
+                    <div class="journal-btn" style="background: #f9f9f9; padding: 10px; border-radius: 15px; text-align: center;">📚 Homework</div>
+                    <div class="journal-btn" style="background: #f9f9f9; padding: 10px; border-radius: 15px; text-align: center;">🏠 Helped family</div>
+                    <div class="journal-btn" style="background: #f9f9f9; padding: 10px; border-radius: 15px; text-align: center;">🍎 Nutrition</div>
+                    <div class="journal-btn" style="background: #f9f9f9; padding: 10px; border-radius: 15px; text-align: center;">🏃 Movement</div>
+                </div>
+                <p style="text-align:center; margin-top:15px; color:#4DB6AC; font-size:0.8rem;">Click anywhere to open full journal →</p>
+            </div>
+
+            <div class="dashboard-card" style="background: #fff; padding: 20px; border-radius: 30px; border: 1px solid #eee;">
+                <h3 style="color:#FF8A8A;">What made you smile today? 😊</h3>
+                <textarea placeholder="Type your answer here..." style="width:100%; height:100px; border-radius:20px; border:2px solid #F5F5F5; padding:15px; margin:15px 0; font-family:inherit; box-sizing: border-box;"></textarea>
+                <button class="btn btn-yellow" style="width:100%; background: #FFD97D; border: none; padding: 12px; border-radius: 20px; font-weight: bold; cursor: pointer;">🚀 Submit Answer</button>
+            </div>
+        </div>
+
+        <div class="dashboard-card" style="margin-top:25px; background: #fff; padding: 20px; border-radius: 30px; border: 1px solid #eee;">
+            <h2 style="color:#FF8A8A;">📊 My Progress</h2>
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap:10px; text-align:center; margin-top:20px; margin-bottom: 20px;">
+                <div><div class="badge-circle" style="margin:0 auto 10px;">🕋</div><p>Spiritual<br><b>0%</b></p></div>
+                <div><div class="badge-circle" style="margin:0 auto 10px;">🤍</div><p>Kindness<br><b>0%</b></p></div>
+                <div><div class="badge-circle" style="margin:0 auto 10px;">📖</div><p>Curiosity<br><b>0%</b></p></div>
+                <div><div class="badge-circle" style="margin:0 auto 10px;">🍎</div><p>Vitality<br><b>0%</b></p></div>
+                <div><div class="badge-circle" style="margin:0 auto 10px;">🛡️</div><p>Resilience<br><b>0%</b></p></div>
+            </div>
+            <div class="alert-banner" style="background: #FFEBEE; padding: 15px; border-radius: 20px; display: flex; gap: 15px; align-items: center;">
+                <span style="font-size:2rem;">🕋</span>
+                <div>
+                    <strong style="color:#D32F2F;">Spiritual Score is below 50%</strong><br>
+                    <small>Your Inner Light needs care! Other traits are dimmed until Spiritual grows.</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-card" style="background: #E0F2F1; padding: 20px; border-radius: 30px; margin-top: 25px;">
+            <h3 style="color:#00796B;">💬 Message Parent</h3>
+            <div style="display:flex; gap:10px; margin:15px 0; flex-wrap:wrap;">
+                <button class="btn" style="background:#fff; font-size:12px; border: none; padding: 8px 15px; border-radius: 15px; cursor: pointer;">❤️ I love you!</button>
+                <button class="btn" style="background:#fff; font-size:12px; border: none; padding: 8px 15px; border-radius: 15px; cursor: pointer;">🎉 Great day!</button>
+                <button class="btn" style="background:#fff; font-size:12px; border: none; padding: 8px 15px; border-radius: 15px; cursor: pointer;">🤗 Miss you!</button>
+            </div>
+            <textarea placeholder="Write your own message here..." style="width:100%; border-radius:20px; border:none; padding:15px; box-sizing: border-box;"></textarea>
+            <button class="btn btn-pink" style="width:100%; margin-top:10px; background: #FF8A8A; color: white; border: none; padding: 12px; border-radius: 20px; font-weight: bold; cursor: pointer;">🚀 Send Message</button>
+        </div>
+
+        <div class="dashboard-card" onclick="location.href='journy.html'" style="cursor: pointer; background: #fff; padding: 20px; border-radius: 30px; border: 1px solid #eee; margin-top: 25px; margin-bottom: 50px;">
+            <h3 style="color:#FF8A8A;">🌱 My Journey</h3>
+            <div class="journey-path" style="display: flex; justify-content: space-around; margin: 20px 0; position: relative;">
+                <div class="step-node step-done" style="background: #C8E6C9; padding: 10px 15px; border-radius: 50%;">✓</div>
+                <div class="step-node step-done" style="background: #C8E6C9; padding: 10px 15px; border-radius: 50%;">✓</div>
+                <div class="step-node step-done" style="background: #C8E6C9; padding: 10px 15px; border-radius: 50%;">✓</div>
+                <div class="step-node" style="background: #eee; padding: 10px 15px; border-radius: 50%;">4</div>
+                <div class="step-node" style="background: #eee; padding: 10px 15px; border-radius: 50%;">5</div>
+            </div>
+            <p style="text-align:center; font-weight:bold; color:#4DB6AC;">Tap to see full journey →</p>
+        </div>
+    </section>
+
+    <!-- Global Footer -->
+    <footer class="global-footer" style="background: #f5f5f5; padding: 30px 5%; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 20px;">
+        <div class="footer-col"><h3>🌱 About Us</h3><p style="max-width: 250px; line-height: 1.5; color: #666;">Growia was built to make growing up an adventure with your buddy "Leafy".</p></div>
+        <div class="footer-col"><h3>🔗 Quick Links</h3><ul style="list-style: none; padding: 0; line-height: 2; color: #4A6D6D; cursor: pointer;"><li>Privacy Policy</li><li>Terms of Use</li><li>FAQ</li></ul></div>
+        <div class="footer-col"><h3>💌 Contact</h3><button class="btn btn-yellow" style="background: #FFD97D; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer;">Say Hello 👋</button></div>
+    </footer>
+<script src="script.js"></script>
+
+<script>
+
+document.addEventListener('DOMContentLoaded', async function() {
+    const token = localStorage.getItem('token');
+    if (!token) { window.location.href = 'child_login.html'; return; }
+
+    try {
+        // Load profile
+        const profileRes = await fetch(`${API_BASE_URL}/Children/profile`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (profileRes.status === 401 || profileRes.status === 403) { window.location.href = 'child_login.html'; return; }
+        if (!profileRes.ok) { console.warn('Profile load failed:', profileRes.status); return; }
+        const profile = await profileRes.json();
+
+        // Update greeting
+        const h1 = document.querySelector('h1[style*="FF8A8A"]');
+        if (h1) h1.textContent = profile.fullName || 'Hero';
+
+        // Update level badge
+        const lvBadge = document.querySelector('[style*="Lv."]');
+        if (lvBadge) lvBadge.innerHTML = lvBadge.innerHTML.replace('Lv.5', `Lv.${profile.level}`);
+
+        // Update progress percentages
+        const pctMap = {
+            'Spiritual': profile.religiousPct,
+            'Kindness':  profile.socialPct,
+            'Curiosity': profile.academicPct,
+            'Vitality':  profile.physicalPct,
+            'Resilience':profile.mentalPct
+        };
+        document.querySelectorAll('.badge-circle').forEach(el => {
+            const label = el.nextElementSibling;
+            if (label) {
+                const name = label.querySelector('p')?.childNodes[0]?.textContent?.trim();
+                if (name && pctMap[name] !== undefined) {
+                    const bEl = label.querySelector('b');
+                    if (bEl) bEl.textContent = Math.round(pctMap[name]) + '%';
+                }
+            }
+        });
+
+        // Load leafy tip
+        try {
+            const tipRes = await fetch(`${API_BASE_URL}/Children/leafy-tip`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (tipRes.ok) {
+                const tipData = await tipRes.json();
+                const tipEl = document.querySelector('[style*="00838F"]')?.nextElementSibling?.querySelector('small');
+                if (tipEl && tipData.tip) tipEl.textContent = tipData.tip;
+            }
+        } catch(e) {}
+
+        // Load daily question
+        try {
+            const qRes = await fetch(`${API_BASE_URL}/Children/daily-question`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (qRes.ok) {
+                const qData = await qRes.json();
+                const qEl = document.querySelector('h3[style*="FF8A8A"]:last-of-type');
+                if (qEl && qData.questionText) qEl.textContent = qData.questionText;
+            }
+        } catch(e) {}
+
+    } catch(e) { console.error('Dashboard load error:', e); }
+});
+
+// Message to parent
+document.addEventListener('DOMContentLoaded', function() {
+    const quickBtns = document.querySelectorAll('[onclick]');
+    // wire up Send Message button
+    const sendBtn = document.querySelector('.btn-pink');
+    if (sendBtn) {
+        sendBtn.addEventListener('click', async function() {
+            const token = localStorage.getItem('token');
+            const textarea = document.querySelector('textarea');
+            const content = textarea?.value?.trim();
+            if (!content) { alert('Write a message first!'); return; }
+            try {
+                const res = await fetch(`${API_BASE_URL}/Children/send-message-to-parent`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ content })
+                });
+                if (res.ok) { alert('Message sent to parent! 💌'); if (textarea) textarea.value = ''; }
+                else { const d = await res.json(); alert(d.message || 'Could not send message.'); }
+            } catch(e) { alert('Connection error'); }
+        });
+    }
+});
+
+// Submit daily question answer
+async function submitQuestionAnswer() {
+    const token = localStorage.getItem('token');
+    const textarea = document.querySelectorAll('textarea')[0];
+    const answer = textarea?.value?.trim();
+    if (!answer) { alert('Please write your answer!'); return; }
+    try {
+        const res = await fetch(`${API_BASE_URL}/Children/submit-question-answer`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({ answer })
+        });
+        if (res.ok) { alert('Answer saved! 🌟'); if (textarea) textarea.value = ''; }
+    } catch(e) {}
+}
+</script>
+
+</body>
+</html>
